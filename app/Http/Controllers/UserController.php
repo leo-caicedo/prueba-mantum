@@ -6,43 +6,61 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function createUser(Request $request)
+    public function createUsers(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required',
-            'cedula' => 'required',
-            'fechaNacimiento' => 'required',
-            'sexo' => 'required'
-        ]);
-        
-        $userData = $request->all();
+        /**
+         * Ejemplo de json
+         * [
+         * 	{
+         * 		"nombre": "leo",
+         * 		"cedula": "1234",
+         * 		"fechaNacimiento": "2025-01-12",
+         * 		"sexo": "m"
+         * 	},
+         * 		{
+         * 		"nombre": "lau",
+         * 		"cedula": "1234",
+         * 		"fechaNacimiento": "2025-01-12",
+         * 		"sexo": "f"
+         * 	}
+         * ]
+         */
+        $personasData = $request->all();
 
-        $profile = new Profile(
-          $userData['nombre'],
-          $userData['cedula'],
-          $userData['fechaNacimiento'],
-          $userData['sexo'],
-        );
+        if (empty($personasData)) {
+            return response()->json(['error' => 'No data provided'], 400);
+        }
 
-        $user = $profile->getUser();
+        $result = [];
 
-        return response()->json($user->toArray());
+        foreach ($personasData as $persona) {
+            $profile = new Profile(
+              $persona['nombre'],
+              $persona['cedula'],
+              $persona['fechaNacimiento'],
+              $persona['sexo'],
+            );
+
+            $result[] = $profile->getPersona()->toArray();
+        }
+
+        return response()->json($result);
     }
 }
 
 class Profile {
-    private User $user;
+    private Persona $persona;
 
     public function __construct($nombre, $cedula, $fechaNacimiento, $sexo) {
-        $this->user = new User($nombre, $cedula, $fechaNacimiento, $sexo);
+        $this->persona = new Persona($nombre, $cedula, $fechaNacimiento, $sexo);
     }
 
-    function getUser() : User {
-        return $this->user;
+    function getPersona() : Persona {
+        return $this->persona;
     }
 }
 
-class User {
+class Persona {
     private $nombre;
     private $cedula;
     private $fechaNacimiento;
