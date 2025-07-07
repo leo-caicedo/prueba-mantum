@@ -12,4 +12,9 @@ class TypeAnimal extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function animal()
+    {
+        return $this->hasMany(Animal::class);
+    }
 }
