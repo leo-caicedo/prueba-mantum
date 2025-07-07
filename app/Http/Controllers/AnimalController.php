@@ -3,63 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Animal;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AnimalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function getQuantityTypeAnimal(Request $request)
     {
-        //
-    }
+        $date = $request->query('date') ?? now()->toDateString();
+        $date = Carbon::parse($date)->toDateString();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        $qtyAnimal = $request->query('qty') ?? 2;
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $qtyTypeAnimal = Animal::with('typeAnimal')
+            ->where('birthdate', '>', $date)
+            ->get()
+            ->groupBy('typeAnimal.name')
+            ->filter(function ($groupAnimal) use ($qtyAnimal) {
+                return count($groupAnimal) > $qtyAnimal;
+            })
+            ->map(function ($groupAnimal) {
+                return count($groupAnimal);
+            });
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Animal $animal)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Animal $animal)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Animal $animal)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Animal $animal)
-    {
-        //
+        return response()->json(compact('qtyTypeAnimal'));
     }
 }
