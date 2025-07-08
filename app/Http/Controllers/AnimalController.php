@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 
 class AnimalController extends Controller
 {
+    /** QUERY SQL
+     * select t."name", count(a.id) from animals a 
+     * join type_animals t on a.type_animal_id = t.id
+     * where a.birthdate > '2016-12-31'
+     * group by t."name"
+     * having count(a.id) > 2
+     * order by count(a.id) desc; // Lo puse para ordenar de mayor a menor
+     */
     public function getQuantityTypeAnimal(Request $request)
     {
         $date = $request->query('date') ?? now()->toDateString();
