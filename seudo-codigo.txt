@@ -1,0 +1,25 @@
+INICIO
+    INICIALIZAR matriz_resultado = []
+    
+    // Paso 1: Traer categorías ordenadas por nombre
+    categorias = CONSULTAR_BD("SELECT * FROM categorias ORDER BY nombre ASC")
+    
+    PARA CADA categoria EN categorias:
+        // Paso 2: Obtener tiendas de cada categoría ordenadas por nombre
+        tiendas = CONSULTAR_BD("SELECT * FROM tiendas WHERE categoria_id = ? ORDER BY nombre ASC", categoria.id)
+        
+        // Paso 3: Construir estructura de tiendas
+        estructura_tiendas = []
+        PARA CADA tienda EN tiendas:
+            AGREGAR_A estructura_tiendas [id_tienda: tienda.id, nombre_tienda: tienda.nombre]
+        FIN_PARA
+        
+        // Paso 4: Agregar a matriz resultado
+        matriz_resultado[categoria.id] = [
+            nombre: categoria.nombre,
+            tiendas: estructura_tiendas
+        ]
+    FIN_PARA
+    
+    RETORNAR matriz_resultado
+FIN

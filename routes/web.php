@@ -10,3 +10,4 @@ Route::get('/', function () {
 
 Route::get('type-animal', [AnimalController::class, 'getQuantityTypeAnimal']);
 Route::get('create-users', [UserController::class, 'createUsers']);
+Route::get('matriz', [AnimalController::class, 'matriz']);

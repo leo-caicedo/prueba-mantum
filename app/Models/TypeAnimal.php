@@ -13,7 +13,7 @@ class TypeAnimal extends Model
         'name'
     ];
 
-    public function animal()
+    public function animals()
     {
         return $this->hasMany(Animal::class);
     }

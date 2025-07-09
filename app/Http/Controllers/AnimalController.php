@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Animal;
+use App\Models\TypeAnimal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -35,5 +36,30 @@ class AnimalController extends Controller
             });
 
         return response()->json(compact('qtyTypeAnimal'));
+    }
+
+    public function matriz()
+    {
+        $typeAnimal = TypeAnimal::with('animals')
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(function ($type) {
+                return [
+                    $type->id => [
+                        'name' => $type->name,
+                        'animals' => $type->animals
+                            ->sortBy('name')
+                            ->map(function ($animal) {
+                                return [
+                                    'id' => $animal->id,
+                                    'name' => $animal->name,
+                                ];
+                            })
+                            ->values()
+                    ]
+                ];
+            });
+
+        return response()->json($typeAnimal);
     }
 }
