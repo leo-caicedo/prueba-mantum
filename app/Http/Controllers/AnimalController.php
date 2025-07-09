@@ -19,7 +19,7 @@ class AnimalController extends Controller
      */
     public function getQuantityTypeAnimal(Request $request)
     {
-        $date = $request->query('date') ?? now()->toDateString();
+        $date = $request->query('date') ?? '2016-12-31';
         $date = Carbon::parse($date)->toDateString();
 
         $qtyAnimal = $request->query('qty') ?? 2;
